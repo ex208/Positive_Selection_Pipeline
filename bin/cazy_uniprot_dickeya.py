@@ -45,9 +45,9 @@ from collections import defaultdict
 
 import bioservices
 
-
-os.chdir("../data")
-os.mkdir("./cazy_dickeya")
+# Define and create output directory
+outdir = os.path.join('data', 'cazy_dickeya')
+os.makedirs(outdir, exist_ok=True)
 
 u = bioservices.UniProt()
 
@@ -71,7 +71,6 @@ for fam, members in caz_map.items():
     q = ' OR '.join(members)
     fa = u.search(q, frmt='fasta')
     fname = '{}.fasta'.format(fam)
-    destination = "./cazy_dickeya"
-    fasta = os.path.join(destination, fname)
+    fasta = os.path.join(outdir, fname)
     with open(fasta, 'w', encoding='ascii') as outfile:
         outfile.write(fa)
