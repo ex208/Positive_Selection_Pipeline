@@ -49,9 +49,9 @@ import bioservices
 outdir = os.path.join('data', 'cazy_dickeya')
 os.makedirs(outdir, exist_ok=True)
 
-u = bioservices.UniProt()
+uhandle = bioservices.UniProt()
 
-caz = u.search('database:(type:cazy) taxonomy:dickeya',
+caz = uhandle.search('database:(type:cazy) taxonomy:dickeya',
                frmt='tab',
                columns='id, database(CAZy)')
 
@@ -69,7 +69,7 @@ for line in caz_iter:
 for fam, members in caz_map.items():
     print('Working on CAZy family: {}'.format(fam))
     q = ' OR '.join(members)
-    fa = u.search(q, frmt='fasta')
+    fa = uhandle.search(q, frmt='fasta')
     fname = '{}.fasta'.format(fam)
     fasta = os.path.join(outdir, fname)
     with open(fasta, 'w', encoding='ascii') as outfile:
