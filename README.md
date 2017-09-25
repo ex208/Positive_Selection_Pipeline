@@ -2,6 +2,10 @@
 # README
 
 ## Positive selection Detection 
+
+For packages, software, libraries required for the following code:
+**pip install -r requirements.txt**
+
 Note: In order to execute  the following the **dickeya.db**, **dickeya_cds_aa.fasta** and **dickeya_cds_nt.fasta** are required
 #### 1. CAZy sequences for Dickeya
 The first step is to obtain the input sequence data. Those data derive from CAZy. 
