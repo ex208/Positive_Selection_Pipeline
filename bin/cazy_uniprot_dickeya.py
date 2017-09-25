@@ -66,11 +66,15 @@ for entry in entries:
     for fam in fams:
         caz_map[fam].append(acc)
 
+# Obtain accession sequences from UniProt
 for fam, members in caz_map.items():
     print('Working on CAZy family: {}'.format(fam))
-    q = ' OR '.join(members)
-    fa = uhandle.search(q, frmt='fasta')
-    fname = '{}.fasta'.format(fam)
-    fasta = os.path.join(outdir, fname)
-    with open(fasta, 'w', encoding='ascii') as outfile:
-        outfile.write(fa)
+    sequences = []  # Holds list of FASTA sequences for family accessions
+    for accession in members:
+        try:
+            sequences.append(uhandle.search(accession, frmt='fasta'))
+        except:
+            print("Could not get sequence for {} - skipping".format(accession))
+    outfname = os.path.join(outdir, '{}.fasta'.format(fam))
+    with open(outfname, 'w') as outfile:
+        outfile.write('\n'.join(sequences))
