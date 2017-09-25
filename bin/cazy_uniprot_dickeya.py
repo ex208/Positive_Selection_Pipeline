@@ -37,16 +37,33 @@ reference.
 Sequences are written to FASTA files named by the corresponding CAZy family
 """
 
+import logging
 import os
 import shutil
+
 
 from collections import defaultdict
 
 import bioservices
 
+
 # Define and create output directory
 outdir = os.path.join('data', 'cazy_dickeya')
 os.makedirs(outdir, exist_ok=True)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# create a file handler
+handler = logging.FileHandler('examples.log')
+handler.setLevel(logging.INFO)
+
+# create a logging format
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+# add the handlers to the logger
+logger.addHandler(handler)
 
 # Make query at UniProt
 uhandle = bioservices.UniProt()
@@ -68,13 +85,13 @@ for entry in entries:
 
 # Obtain accession sequences from UniProt
 for fam, members in caz_map.items():
-    print('Working on CAZy family: {}'.format(fam))
+    logging.info('Working on CAZy family: {}'.format(fam))
     sequences = []  # Holds list of FASTA sequences for family accessions
     for accession in members:
         try:
             sequences.append(uhandle.search(accession, frmt='fasta'))
         except:
-            print("Could not get sequence for {} - skipping".format(accession))
+            logging.debug("Could not get sequence for {} - skipping".format(accession))
     outfname = os.path.join(outdir, '{}.fasta'.format(fam))
     with open(outfname, 'w') as outfile:
         outfile.write('\n'.join(sequences))
