@@ -1,7 +1,7 @@
 
-#README
+# README
 
-##Positive selection Detection 
+## Positive selection Detection 
 Note: In order to execute  the following the **dickeya.db**, **dickeya_cds_aa.fasta** and **dickeya_cds_nt.fasta** are required
 #### 1. CAZy sequences for Dickeya
 The first step is to obtain the input sequence data. Those data derive from CAZy. 
@@ -104,7 +104,3 @@ a. In order to get the labelled #1 branches we use ETE. The python script **leav
 17. We make the final cvs a data frame (ranking.ipynb) and create a dictionary using the **cazy_leaves** function (from the **leaves.py** script) to get the CAZy families and the labelled leaves. 
 18. We make the leaves into groups so we can have access and finally write out in a cvs a file named **positive_selected_qvals.csv** which shows the CAZy families and groups are above the preselected threshold
 Finally, a heat map using seaboard was generated to represent those positive elected families and the png was named as **heatmap_full_analysis.png**
-
-
-# Positive_Selection_Pipeline
-# Positive_Selection_Pipeline
