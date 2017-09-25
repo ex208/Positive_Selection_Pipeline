@@ -40,7 +40,6 @@ Sequences are written to FASTA files named by the corresponding CAZy family
 import os
 import shutil
 
-from io import StringIO
 from collections import defaultdict
 
 import bioservices
@@ -49,19 +48,20 @@ import bioservices
 outdir = os.path.join('data', 'cazy_dickeya')
 os.makedirs(outdir, exist_ok=True)
 
+# Make query at UniProt
 uhandle = bioservices.UniProt()
-
 caz = uhandle.search('database:(type:cazy) taxonomy:dickeya',
-               frmt='tab',
-               columns='id, database(CAZy)')
+                     frmt='tab',
+                     columns='id, database(CAZy)')
 
-caz_map = defaultdict(list)
-caz_file = StringIO(caz)
-caz_iter = iter(caz_file)
-next(caz_iter)  # this takes the iterator to line two
+# Generate list of (accession, CAZy families) tuples from returned result
+entries = [line.strip() for line in caz.split('\n')[1:] \
+           if len(line.strip())]
 
-for line in caz_iter:
-    acc, xref = line.split()
+# Parse returned entries into family: [accession1, accession2] dictionary
+caz_map = defaultdict(list)  # key: CAZy family; value: list of accessions
+for entry in entries:
+    acc, xref = entry.split()
     fams = xref.split(';')[:-1]
     for fam in fams:
         caz_map[fam].append(acc)
