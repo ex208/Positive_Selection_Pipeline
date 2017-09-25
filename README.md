@@ -6,9 +6,8 @@ Note: In order to execute  the following the **dickeya.db**, **dickeya_cds_aa.fa
 #### 1. CAZy sequences for Dickeya
 The first step is to obtain the input sequence data. Those data derive from CAZy. 
 A python script named **cazy_uniprot_dickeya.py** (./bin) allows access to UniProt and returns data from CAZy based on a specific family which we can pre define.
-was generated and it allows the generation of fasta files with all CAZYmes. 
 
- The database has been specified to be CAZy and the taxonomy to be Dickeya.
+The database has been specified to be CAZy and the taxonomy to be Dickeya.
 
 By executing **python3 cazy_uniprot_dickeya.py** (navigating to the **./bin**) generates a new directory under the **./data** directory named as **./data/cazy_dickeya** and stores all CAZy sequences for Dickeya, separated per CAZy family and stored under the appropriate name. 
 
