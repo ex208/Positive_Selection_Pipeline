@@ -40,32 +40,36 @@ Sequences are written to FASTA files named by the corresponding CAZy family
 import logging
 import os
 import shutil
-
+import sys
 
 from collections import defaultdict
 
 import bioservices
 
+# Set up logger
+logging.basicConfig(filename='examples.log', level=logging.DEBUG)
+logger = logging.getLogger("cazy_uniprot_dickeya.py")
 
-# Define and create output directory
-outdir = os.path.join('data', 'cazy_dickeya')
-os.makedirs(outdir, exist_ok=True)
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-# create a file handler
-handler = logging.FileHandler('examples.log')
+# create handlers
+handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.INFO)
 
 # create a logging format
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 
 # add the handlers to the logger
 logger.addHandler(handler)
 
+
+# Define and create output directory
+outdir = os.path.join('data', 'cazy_dickeya')
+os.makedirs(outdir, exist_ok=True)
+logger.info("Created %s", outdir)
+
 # Make query at UniProt
+logger.info("Running query at UniProt")
+logger.debug("This is debug level")
 uhandle = bioservices.UniProt()
 caz = uhandle.search('database:(type:cazy) taxonomy:dickeya',
                      frmt='tab',
@@ -74,6 +78,7 @@ caz = uhandle.search('database:(type:cazy) taxonomy:dickeya',
 # Generate list of (accession, CAZy families) tuples from returned result
 entries = [line.strip() for line in caz.split('\n')[1:] \
            if len(line.strip())]
+logger.info("%d entries returned", len(entries))
 
 # Parse returned entries into family: [accession1, accession2] dictionary
 caz_map = defaultdict(list)  # key: CAZy family; value: list of accessions
@@ -82,16 +87,21 @@ for entry in entries:
     fams = xref.split(';')[:-1]
     for fam in fams:
         caz_map[fam].append(acc)
+logger.info("Grouped entries into %d families", len(caz_map))
 
 # Obtain accession sequences from UniProt
 for fam, members in caz_map.items():
-    logging.info('Working on CAZy family: {}'.format(fam))
+    logger.info('Working on CAZy family: %s', fam)
     sequences = []  # Holds list of FASTA sequences for family accessions
     for accession in members:
+        logger.debug("Getting sequence for %s", accession)
         try:
             sequences.append(uhandle.search(accession, frmt='fasta'))
         except:
-            logging.debug("Could not get sequence for {} - skipping".format(accession))
-    outfname = os.path.join(outdir, '{}.fasta'.format(fam))
+            logger.warning("Could not get sequence for %s - skipping",
+                            accession)
+    outfname = os.path.join(outdir, '%s.fasta' % fam)
     with open(outfname, 'w') as outfile:
         outfile.write('\n'.join(sequences))
+
+logger.info("Complete")
