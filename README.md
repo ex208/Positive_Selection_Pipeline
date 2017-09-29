@@ -68,10 +68,15 @@ The new fasta files containing unique sequences after RBBH analysis and named af
 ### 4. Splitting large diverse CAZy families into subgroups(**automation_split_CAZy_families.py** )
 
 As some of those families have quite a few representatives enzymes, the next step  was to split those families based on the RBBH table from the dickeya database.
-By running the **split_CAZy_families.py** we can use sys.argv[] to automate the process for all large CAZy families. Finally, a python script named as **automation_split_CAZy_families.py** was created to pass as arguments all individual CAZy families. 
+By running the **split_CAZy_families_1.py** we can use sys.argv[] to automate the process for all large CAZy families. Finally, a python script named as **automation_split_CAZy_families_1.py** was created to pass as arguments all individual CAZy families. 
 The code run as follows: 
 
-$ python3 automation_split_CAZy_families.py
+$ python3 automation_split_CAZy_families_1.py
+The script generates the following : 
+1. **./data/locus/txt**
+2. **data/locus/fasta**
+Those two directories containing the locus per CAZy family in text file and the corresponding seqs in fasta. 
+3. Under each CAZy family which need to be split a txt directory with all equivalent groups for each family and fasta directory with tehe sequences. 
 
 ### 4. Amending CAZy families
 
