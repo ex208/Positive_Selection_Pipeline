@@ -7,6 +7,7 @@ For packages, software, libraries required for the following code:
 **pip install -r requirements.txt**
 
 Note: In order to execute  the following the **dickeya.db**, **dickeya_cds_aa.fasta** and **dickeya_cds_nt.fasta** are required
+
 #### 1. CAZy sequences for Dickeya
 The first step is to obtain the input sequence data. Those data derive from CAZy. 
 A python script named **cazy_uniprot_dickeya.py** (./bin) allows access to UniProt and returns data from CAZy based on a specific family which we can pre define.
@@ -23,7 +24,8 @@ The script:
  We use a default dict for this. As `caz` is just a string we use io.StringIO to handle it like a file whose lines we iterate over. As the first line contains the column headers, we ignore it. Each line is split into accession and a list of CAZy families; from this we construct the dictionary.
 
  [3] For each CAZy family, retrieve the mapped UniProtKB accessions in fasta format and write to a file with name <CAZy_family>.fasta. My simple approach here retrieves each batch of sequences from uniprot.org. One could also download all Dickeya sequences in one go and then get them from that file.
- 
+
+
 ### 2. Processing CAZy raw data
  Run **python3 process_cazy_data.py**
 
@@ -80,14 +82,19 @@ Those two directories containing the locus per CAZy family in text file and the 
 
 ### 4. Amending CAZy families
 
-Some CAZy families include sequences which are very diverse in comparison to the other sequences and therefore in order to obtain a more reliable output indicating positive selection we will have to exclude those sequences form the MSA. We do that for four  CAZy families by running the **remove_ids.py** python script. Run **rename_dies.py** and **rename_dirs_2.py**  to rename the directories and merge data. ### 5. Input data for Positive selection analysisThe next step is to obtain MSA and phylogenetic trees using RaxML in order to use those data as input for positive selection analysis. We generate those data by running the **automation_repeat_split_families.py** which runs the **ps_automation.sh** shell script and the **ps_automation.py** which runs the **ps_automation.sh** shell script.
-Both shell scripts invoke several python scripts in order to obtain the back translations, MSA pf protein sea nucleotides, different formats of the MSAS (FASTA, CLUSTAL, RPHYLIP) . Split the nucleotide sequence into petition, generate phylogenetic trees using RaxML. Splitting the trees into subtrees by alternatively assigning a different branch node each time, modify the rphylip MSA in order to be readable by RaxML and organise teach repo in that way that we get access to the phylogenetic tree, control file for CodemML and MSA. 
+Some CAZy families include sequences which are very diverse in comparison to the other sequences and therefore in order to obtain a more reliable output indicating positive selection we will have to exclude those sequences form the MSA. We do that for four  CAZy families by running the **remove_ids.py** python script. Run **rename_dies.py** and **rename_dirs_2.py**  to rename the directories and merge data. ### 5. Input data for Positive selection analysisa.  Generate Input for codeml
+________
+The next step is to obtain MSA and phylogenetic trees using RaxML in order to use those data as input for positive selection analysis. We generate those data by running the **automation_repeat_split_families.py** which runs the **ps_automation_repeat_split_families.sh** shell script and the **ps_automation.py** which runs the **ps_automation.sh** shell script.
+Both shell scripts invoke several python scripts in order to obtain the back translations, MSA of protein and nucleotides  sequences , different formats of the MSA'S (FASTA, CLUSTAL, RPHYLIP). 
+Split the nucleotide sequence into petition, generate phylogenetic trees using RaxML, splitting the trees into subtrees by alternatively assigning a different branch node each time, modify the rphylip MSA in order to be readable by RaxML and organise teach repo in that way that we get access to the phylogenetic tree, control file for CodemML and MSA. 
 Finally, the generated input data were transferred otto the local cluster. 
-Shell scripts were written for each CAZy family and subgroup in order to run codeml for all trees within each CAZy family/subgroup   for the alternative and null model. Finally, a codeml moc output fiel was generated for each tree inw hithin each CAZy family and stored under the corresponding tree directoey storing information about the maximum likelihood 
-### 6. Process for generating codeml output and filtered data
-Note that in order to analyse the dat some of the code request ETE and therefore need to be installed in the directory in advance. 
 
-1. The first step is to obtain a complete data set for the maximum likelihood values of all CAZY families and their subgroups for the null and alternative model. Two functions **codeml_function.py** and **codeml_function_groups.py** Those two function were passed into 2 separate python scripts named as **codeml_function.py** and **codeml_function_groups.py**. We invoke those two scripts and corresponding functions from within the **codeml.py**. the script generates twi cvs files named as **codeml_results.csv** and **codeml_results_split.csv**
+b. Cluster 
+_________Shell scripts were written for each CAZy family and subgroup in order to run codeml for all trees within each CAZy family/subgroup   for the alternative and null model. Finally, a codeml mlc output file was generated for each tree in within each CAZy family and stored under the corresponding tree directory storing information about the maximum likelihood 
+### 6. Process for generating Codeml output and filtered data
+Note that in order to analyse the data some of the code request ETE and therefore need to be installed in the directory in advance. 
+
+1. The first step is to obtain a complete data set for the maximum likelihood values of all CAZY families and their subgroups for the null and alternative model. Two functions **codeml_data** and **codeml_data_2** were passed into 2 separate python scripts named as **codeml_function.py** and **codeml_function_groups.py**. We invoke those two scripts and corresponding functions from within the **codeml.py**. the script generates two cvs files named as **codeml_results.csv** and **codeml_results_split.csv**
 
 For those families/treedirs which the codeml output was not complete then I run: **bash codeml.sh $CAZYFAMILY** or navigate within the directory the data is missing and simply run: codeml and the type of control file we are providing (depending if it the null or alternative model). 
 
