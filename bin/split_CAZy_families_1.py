@@ -211,7 +211,7 @@ for txt_files in os.listdir(family_dir):
     if txt_files.endswith(".txt"):
         shutil.move(os.path.join(family_dir, txt_files), text)
 
-# Testing for duplicated seqs
+# Testing for duplicated seqs in the text files
 sets = []
 for text_files in os.listdir(text):
     if text_files.endswith(".txt"):
@@ -243,6 +243,34 @@ for text_files in os.listdir(text):
             else:
                 print("No paralogs!")
                 logger.info("No paralogs dtected!")
-                
 
+# Texting if teh fasta files has teh sequences from the text files
+# Look at the fasta files 
+for dirs in os.listdir(directory):
+    if dirs != ".DS_Store":
+        fasta = os.path.join(directory, dirs, "fasta")
+        for fasta_files in os.listdir(fasta):
+            if fasta_files.endswith(".fasta"):
+                ins1 = fasta_files.split(".")[0]
+                locus_tags = []
+                fasta_files = os.path.join(fasta, fasta_files)
+                with open(fasta_files, "r") as handle:
+                    records = list(SeqIO.parse(handle, "fasta"))
+                    tags = [r.id for r in records]
+                    for record in records:
+                        locus_tags.append(record.id)
+            text = os.path.join(directory, dirs, "txt")
+            for text_files in os.listdir(text):
+                if text_files.endswith(".txt"):
+                    ins2 = text_files.split(".")[0]
+                    loc = []
+                    text_files = os.path.join(text, text_files)
+                    if ins1 == ins2:
+                        for lines in open(text_files):
+                            loc.append(lines.strip())
+                        #print(text_files, len(loc), fasta_files, len(locus_tags) )
+                        if len(loc) != len(locus_tags):
+                            print(text_files) 
+                            logger.warning("Text file and fasta file do not correspond to each other!")
+                            logger.debug("Text file %s has %s locus and the %s has %s sequences" % (text_files, len(loc), fasta_files, len(locus_tags)))
 logger.info("Complete")
