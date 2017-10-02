@@ -134,7 +134,7 @@ def split_families():
         sql = 'SELECT * FROM rbbh WHERE locus_tag_1=?'
         # List to store the locus tags seen in the RBBH
         egs = []
-        # List to store the locus tags ids from the rbbh file
+        # List to store the locus tags ids from the text file
         locus_names = []
     locus_file_dir = os.path.join("../data/locus/txt", sys.argv[1]+"_locus.txt")
     with open(locus_file_dir) as handle:
