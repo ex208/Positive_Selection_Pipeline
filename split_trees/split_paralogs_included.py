@@ -30,7 +30,7 @@ that do fit those criteria is obtained.
 # that contain no paralogues *and* meet a minimum depth requiremend. 
 # To do this, we can apply the recursive functions in turn:
 
-os.makedirs(sys.argv[1]+"_paralogs")
+#os.makedirs(sys.argv[1]+"_paralogs")
 
 species_pattern = re.compile("_[0-9]*$")
 
@@ -46,7 +46,7 @@ def is_shorter_than(tree, length):
     return max([tree.distance(t) for t in tree.get_terminals()]) < length
 
 
-def split_tree(tree, branch_length=20, subtrees=None):
+def split_tree(tree, branch_length=10, subtrees=None):
     """Returns a list of subtrees with max len branch_length."""
     if subtrees is None:  # Required to avoid problems with state
         subtrees = list()
@@ -71,12 +71,12 @@ print("Subtrees ({})".format(len(subtrees)))
 i = 1   
 for st in subtrees:
     tdir = str(i)
-    Phylo.write(st, treefile+tdir+'paralogs.nwk', 'newick')
+    Phylo.write(st, treefile+tdir+'paralogs_1.nwk', 'newick')
     i +=1
         
     leaf_names = [e.name for e in st.get_terminals()]
     result_file = file_tree + "_"+tdir+ '.rbbh.fasta'
-    with open("group_"+tdir+'.txt', 'w') as output:
+    with open("group1_"+tdir+'.txt', 'w') as output:
         for name in leaf_names:
             output.write(name+ '\n')
 
@@ -91,9 +91,9 @@ for text_file in os.listdir("."):
     if text_file.endswith("txt"):
         file = text_file.split(".")[0]
         number = file.split("_")[1]
-        wanted_file = "group_"+ number +".txt" # Input interesting sequence IDs, one per line
+        wanted_file = "group1_"+ number +".txt" # Input interesting sequence IDs, one per line
         # assign the result files with the sugroups 
-        result_file = "group_" +number +'.fasta' # Output fasta file   
+        result_file = "group1_" +number +'.fasta' # Output fasta file   
         # set for all wanted identifiers
         wanted = set()
         with open(wanted_file) as f:
@@ -113,7 +113,7 @@ for text_file in os.listdir("."):
 
 
 # Move text and fasta files in corresponding repos named as fasta and txt
-fasta = sys.argv[1]+ "_paralogs" +"/fasta"
+fasta = sys.argv[1]+ "_paralogs" +"/fasta_1"
 os.makedirs(fasta)
 family_dir = sys.argv[1]
 for fasta_files in os.listdir("."):
@@ -121,7 +121,7 @@ for fasta_files in os.listdir("."):
        # shutil.move(os.path.join(family_dir, fasta_files), fasta)
         shutil.move(fasta_files, fasta)
 
-text = sys.argv[1]+"_paralogs""/txt"
+text = sys.argv[1]+"_paralogs""/txt_1"
 os.makedirs(text)
 for txt_files in os.listdir("."):
     if txt_files.endswith(".txt"):
